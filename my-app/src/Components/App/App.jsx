@@ -1,9 +1,9 @@
 import React from 'react';
-import Blade from './Blade';
+import Blade from '../Blade/TestBlade';
 import { Panel } from '@fluentui/react/lib/Panel';
 import { useBoolean } from '@fluentui/react-hooks';
-import { ButtonContainer, StyledButton } from './StyleComponents.js/AppStyle';
-import { AppProvider } from './AppContext'; // Import the context provider
+import { ButtonContainer, StyledButton } from '../App/AppStyle';
+import { AppProvider } from '../AppContext/AppContext'; // Import the context provider
 
 const App = () => {
   const [isOpen, { setTrue: openPanel, setFalse: dismissPanel }] = useBoolean(false);

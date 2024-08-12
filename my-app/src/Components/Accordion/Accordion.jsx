@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ToggleIcon, AccordionHeader, AccordionBody, AccordionCon } from './StyleComponents.js/AccordionStyle';
+import { ToggleIcon, AccordionHeader, AccordionBody, AccordionCon } from './AccordionStyle';
 
 const Accordion = ({ title, children }) => {
   const [isOpen, setIsOpen] = useState(true);

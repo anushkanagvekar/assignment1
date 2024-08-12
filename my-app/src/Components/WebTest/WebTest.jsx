@@ -1,18 +1,42 @@
 import React, { useContext } from 'react';
-import { InputBox, InputField, InputLabel, RadioInput, RadioOption, RadioOptions, SelectField } from './StyleComponents.js/FormdataStyle';
+import { InputBox, InputField, InputLabel, RadioInput, RadioOption, RadioOptions, SelectField } from '../WebTest/WebTestStyle';
 import { Toggle } from '@fluentui/react/lib/Toggle';
-import { AppContext } from './AppContext';
+import { AppContext } from '../AppContext/AppContext';
+
+
 
 const Formdata = () => {
+  
   const { formData, updateFormData } = useContext(AppContext);
-  const { name, description, monitor, testUrl, request, isActive } = formData;
+  const { name, description, monitor, testUrl, requestType, isActive } = formData;
 
-  const handleInputChange = (key, value) => {
-    updateFormData(key, value);
+  const handleInputChange = (fieldName, value) => {
+    updateFormData(fieldName, value); // Update context here
   };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await apiEndpoints.updateFormData(formData); // Update form data
+      console.log('Form data updated successfully');
+    } catch (error) {
+      console.error('Failed to update form data:', error);
+    }
+  };
+
+  // const handleSubmit = async (event) => {
+  //   event.preventDefault();
+  //   try {
+  //     await apiEndpoints.updateFormData(formData); // Update form data
+  //     console.log('Form data updated successfully');
+  //   } catch (error) {
+  //     console.error('Failed to update form data:', error);
+  //   }
+  // };
 
   return (
     <div>
+      <form onSubmit={handleSubmit}>
       <div>
         <InputBox>
           <InputLabel>Name* :</InputLabel>
@@ -62,8 +86,8 @@ const Formdata = () => {
               <RadioInput
                 type="radio"
                 value="GET"
-                checked={request === 'GET'}
-                onChange={() => handleInputChange('request', 'GET')}
+                checked={requestType === 'GET'}
+                onChange={() => handleInputChange('requestType', 'GET')}
               />
               GET
             </RadioOption>
@@ -71,8 +95,8 @@ const Formdata = () => {
               <RadioInput
                 type="radio"
                 value="POST"
-                checked={request === 'POST'}
-                onChange={() => handleInputChange('request', 'POST')}
+                checked={requestType === 'POST'}
+                onChange={() => handleInputChange('requestType', 'POST')}
               />
               POST
             </RadioOption>
@@ -94,8 +118,13 @@ const Formdata = () => {
           />
         </InputBox>
       </div>
+      </form>
     </div>
   );
 };
 
 export default Formdata;
+
+
+
+

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
-import Datepicker from './Datepicker'; 
-import Formdata from './FormData'; 
-import Accordion from './Accordion'; 
+
+import React, { useContext } from 'react';
+import Datepicker from '../Date/DatePicker'; 
+import Formdata from '../WebTest/WebTest'; 
+import Accordion from '../Accordion/Accordion'; 
+import { AppContext } from '../AppContext/AppContext';
+import apiEndpoints from '../ApiService/ApiService'; // Import your apiEndpoints
 import {
   BladeLeft,
   SettingTitle,
@@ -13,48 +16,51 @@ import {
   StyledButtonCancel,
   BladeContainer,
   DateInfo,
-} from './StyleComponents.js/BladeStyle'; // Assuming necessary styled components are imported here
+} from '../Blade/TestBladeStyle'; // Assuming necessary styled components are imported here
 
 const Blade = ({ dismissPanel }) => {
-  // State for form data including dates
-  const [formData, setFormData] = useState({
-    name: 'Catchpoint web test',
-    description: 'This is web test',
-    monitor: 'Object',
-    testUrl: 'www.example.com',
-    request: 'GET',
-    isActive: true,
-    startDate: null,
-    endDate: null,
-  });
+  const { formData, updateFormData } = useContext(AppContext);
 
-  // Handler for cancel button
+
   const handleCancel = () => {
     dismissPanel();
   };
 
-  // Handler for save button
-  const handleSave = () => {
-    console.log('Complete Form Data:', formData);
 
-    
+
+  const handleSave = async () => {
+    try {
+      
+      const formDataToSend = {
+        ...formData,
+        startDate: formData.startDate.toISOString(),
+        endDate: formData.endDate.toISOString()
+      };
+      const formDataJSON = JSON.stringify(formData);
+      // Call addFormData function from apiEndpoints to save data
+      await apiEndpoints.addFormData(formDataJSON);
+      
+      console.log('Form data saved successfully:', formDataJSON);
+      
+      
+    } catch (error) {
+      console.error('Failed to save form data:', error);
+      
+    }
   };
+  
+
+  
 
   // Handler for form data change
   const handleInputChange = (fieldName, value) => {
-    setFormData({
-      ...formData,
-      [fieldName]: value,
-    });
+    updateFormData(fieldName, value); // Update context here
   };
 
   // Handler for date range selection
   const handleDateRangeSelect = (start, end) => {
-    setFormData({
-      ...formData,
-      startDate: start,
-      endDate: end,
-    });
+    updateFormData('startDate', start); // Update startDate
+    updateFormData('endDate', end);     // Update endDate
   };
 
   return (
@@ -74,7 +80,7 @@ const Blade = ({ dismissPanel }) => {
                 defaultDescription={formData.description}
                 defaultMonitor={formData.monitor}
                 defaultTestUrl={formData.testUrl}
-                defaultRequest={formData.request}
+                defaultRequest={formData.requestType}
                 defaultIsActive={formData.isActive}
                 onInputChange={handleInputChange}
               />
@@ -82,7 +88,7 @@ const Blade = ({ dismissPanel }) => {
           </Accordion>
           <Accordion title="More settings">
             <AccordionContainer>
-              <Datepicker onDateRangeSelect={handleDateRangeSelect} />
+            <Datepicker onDateRangeSelect={handleInputChange} />
             </AccordionContainer>
           </Accordion>
         </BladeRight>

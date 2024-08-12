@@ -3,16 +3,26 @@ import React, { createContext, useState } from 'react';
 export const AppContext = createContext();
 
 export const AppProvider = ({ children }) => {
-  const [formData, setFormData] = useState({
+
+  const getToday = () => {
+    const today = new Date();
+    return today;
+  };
+
+
+  const initialFormData = {
+    
     name: 'Catchpoint web test',
     description: 'This is web test',
     monitor: 'Object',
-    testUrl: 'www.example.com',
-    request: 'GET',
+    testUrl: 'www.xyz.com',
+    requestType: 'GET',
     isActive: true,
-  });
+    startDate: getToday(),
+    endDate: getToday(),
+  };
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [formData, setFormData] = useState(initialFormData);
 
   const updateFormData = (fieldName, value) => {
     setFormData({
@@ -22,7 +32,7 @@ export const AppProvider = ({ children }) => {
   };
 
   return (
-    <AppContext.Provider value={{ formData, updateFormData, selectedDate, setSelectedDate }}>
+    <AppContext.Provider value={{ formData, updateFormData }}>
       {children}
     </AppContext.Provider>
   );

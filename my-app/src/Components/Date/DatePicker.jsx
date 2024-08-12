@@ -1,13 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
+import  { useContext } from 'react';
+import { AppContext } from '../AppContext/AppContext';
 import { Label } from '@fluentui/react/lib/Label';
 import { Stack } from '@fluentui/react/lib/Stack';
 import { DatePicker } from '@fluentui/react/lib/DatePicker';
 
-const Datepicker = ({ onDateRangeSelect }) => {
-  const [startDate, setStartDate] = useState(null);
-  const [endDate, setEndDate] = useState(null);
+const Datepicker = () => {
+ 
+  const { formData, updateFormData } = useContext(AppContext);
+  const { startDate,endDate } = formData;
 
-  // Function to get today's date in the correct format
+  const handleInputChange = (fieldName, value) => {
+    updateFormData(fieldName, value); // Update context here
+  };
+  
+  // Function to get today's date 
   const getToday = () => {
     const today = new Date();
     return today;
@@ -16,29 +23,30 @@ const Datepicker = ({ onDateRangeSelect }) => {
   // Effect to set today's date when component mounts
   useEffect(() => {
     const todayDate = getToday();
-    setStartDate(todayDate);
-    setEndDate(todayDate);
-  }, []); // Run only once on component mount
+    handleInputChange('startDate',todayDate);
+    handleInputChange('endDate',todayDate);
+  }, []); 
 
   const handleStartDateChange = (date) => {
-    setStartDate(date || null); // Handle null case if date is cleared
+   
+    handleInputChange('startDate',date);
+    
+    // Handle null case if date is cleared
     if (endDate && date && date > endDate) {
-      setEndDate(null);
+      handleInputChange('endDate',null);
     }
-    if (date && endDate) {
-      onDateRangeSelect(date, endDate);
-    }
-  };
+  }
 
   const handleEndDateChange = (date) => {
-    setEndDate(date || null); // Handle null case if date is cleared
+    
+    handleInputChange('endDate',date);
+    
+    
+    // // Handle null case if date is cleared
     if (startDate && date && date < startDate) {
-      setStartDate(null);
+      handleInputChange('startDate',null);
     }
-    if (startDate && date) {
-      onDateRangeSelect(startDate, date);
-    }
-  };
+  }
 
   return (
     <div>
@@ -65,7 +73,3 @@ const Datepicker = ({ onDateRangeSelect }) => {
 };
 
 export default Datepicker;
-
-
-
-
